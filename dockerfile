@@ -21,14 +21,14 @@ RUN apt install -y \
       supervisor \
       nginx \
       nano \
-      cron \
-      imagemagick
+      cron 
 
 RUN add-apt-repository ppa:ondrej/php
 
 # Install php8.2-fpm
 RUN apt install -y \
       php8.2 \
+      imagemagick \
       php8.2-fpm \
       php8.2-common \
       php8.2-pdo \
@@ -55,8 +55,8 @@ RUN curl -s https://getcomposer.org/installer | php -- --install-dir=/usr/local/
 ENV COMPOSER_ALLOW_SUPERUSER=1
 ENV PATH="./vendor/bin:$PATH"
 
-COPY opcache.ini $PHP_INI_DIR/conf.d/
-COPY php.ini $PHP_INI_DIR/conf.d/
+COPY opcache.ini /etc/php/8.2/fpm/opcache.ini
+COPY php.ini /etc/php/8.2/fpm/php.ini
 
 RUN chown -R www-data:www-data /var/lib/nginx
 
@@ -65,6 +65,7 @@ RUN crontab -l | { cat; echo "* * * * * php /var/www/artisan schedule:run >> /de
 # RUN echo '*  *  *  *  * /usr/local/bin/php  /var/www/artisan schedule:run >> /dev/null 2>&1' > /etc/crontabs/root && mkdir /etc/supervisor.d
 
 ADD master.conf /etc/supervisor/conf.d/
+ADD www.conf /etc/php/8.2/fpm/pool.d/www.conf
 ADD default.conf /etc/nginx/conf.d/
 ADD nginx.conf /etc/nginx/
 
