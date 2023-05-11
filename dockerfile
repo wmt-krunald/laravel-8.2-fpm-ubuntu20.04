@@ -1,10 +1,12 @@
 # Using base ubuntu image
 FROM ubuntu:20.04
 
+LABEL Maintainer Krunal Dabgar <krunald@webmobtech.com>
+
 # Base install
 RUN apt update --fix-missing
-# RUN  DEBIAN_FRONTEND=noninteractive
 RUN ln -snf /usr/share/zoneinfo/Asia/Kolkata /etc/localtime && echo Asia/Kolkata > /etc/timezone
+
 RUN apt install -y \
       software-properties-common \
       git \
@@ -61,6 +63,7 @@ RUN chown -R www-data:www-data /var/lib/nginx
 # Setup Crond and Supervisor by default
 RUN crontab -l | { cat; echo "* * * * * php /var/www/artisan schedule:run >> /dev/null 2>&1"; } | crontab -
 # RUN echo '*  *  *  *  * /usr/local/bin/php  /var/www/artisan schedule:run >> /dev/null 2>&1' > /etc/crontabs/root && mkdir /etc/supervisor.d
+
 ADD master.ini /etc/supervisor.d/
 ADD default.conf /etc/nginx/conf.d/
 ADD nginx.conf /etc/nginx/
