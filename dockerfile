@@ -64,7 +64,7 @@ RUN chown -R www-data:www-data /var/lib/nginx
 RUN crontab -l | { cat; echo "* * * * * php /var/www/artisan schedule:run >> /dev/null 2>&1"; } | crontab -
 # RUN echo '*  *  *  *  * /usr/local/bin/php  /var/www/artisan schedule:run >> /dev/null 2>&1' > /etc/crontabs/root && mkdir /etc/supervisor.d
 
-ADD master.ini /etc/supervisor.d/
+ADD master.conf /etc/supervisor/conf.d/
 ADD default.conf /etc/nginx/conf.d/
 ADD nginx.conf /etc/nginx/
 
